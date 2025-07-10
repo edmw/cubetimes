@@ -1,0 +1,37 @@
+[project]
+name = "cubetimes"
+version = "1.0.0"
+description = "A comprehensive tool for analyzing cube solve times with advanced plotting and statistics"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "rich>=14.0.0",
+    "matplotlib>=3.7.0",
+    "numpy>=1.24.0",
+]
+authors = [
+    {name = "Michael Baumgärtner", email = "mib@yamanote.de"}
+]
+keywords = ["cube", "speedcubing", "times", "csv", "json", "plotting", "statistics", "analysis", "ao5", "ao12", "ao100"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Utilities",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.scripts]
+cubetimes = "cubetimes.main:main"
+
+[project.urls]
+Homepage = "https://github.com/edmw/cubetimes"
+Repository = "https://github.com/edmw/cubetimes"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cubetimes"]
