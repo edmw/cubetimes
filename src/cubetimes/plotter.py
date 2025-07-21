@@ -385,6 +385,56 @@ def plot_times_over_date(
         ax.set_title(title, fontsize=14, fontweight="bold")
         ax.grid(True, alpha=0.3, color="#2E2E2E")  # Dark grid lines on white background
 
+        # Add text labels to vertical lines for best averages (after plotting is complete)
+        if not isinstance(analysis_results, dict) or "error" not in analysis_results:
+            for stat in analysis_results["statistics"]:
+                if (
+                    stat["kind"]
+                    in [StatisticKind.AO5, StatisticKind.AO12, StatisticKind.AO100]
+                    and stat["best_position"] is not None
+                ):
+                    position_index = stat["best_position"] - 1
+                    if 0 <= position_index < len(data):
+                        if by_solve_number:
+                            x_coordinate = stat["best_position"]
+                        else:
+                            x_coordinate = data[position_index]["parsed_date"]
+
+                        # Position the text at about 80% of the y-axis range
+                        y_min, y_max = ax.get_ylim()
+                        text_y = y_min + 0.8 * (y_max - y_min)
+                        
+                        # Create short label for the text
+                        short_label = stat["kind"].name.lower()  # ao5, ao12, ao100
+                        
+                        # Choose color to match the line
+                        color_map = {
+                            StatisticKind.AO5: PlotColors.AO5_LINE.value,
+                            StatisticKind.AO12: PlotColors.AO12_LINE.value,
+                            StatisticKind.AO100: PlotColors.AO100_LINE.value,
+                        }
+                        
+                        if stat["kind"] in color_map:
+                            color = color_map[stat["kind"]]
+                            ax.text(
+                                x_coordinate,
+                                text_y,
+                                short_label,
+                                rotation=90,
+                                verticalalignment='center',
+                                horizontalalignment='center',
+                                color=color,
+                                fontsize=10,
+                                fontweight='bold',
+                                alpha=0.9,
+                                bbox=dict(
+                                    boxstyle="round,pad=0.3",
+                                    facecolor='white',
+                                    edgecolor=color,
+                                    alpha=0.9
+                                )
+                            )
+
         # Add legend if there are DNFs or vertical lines
         legend = ax.legend(
             loc="upper right",
