@@ -24,9 +24,9 @@ class PlotColors(Enum):
 
     DATA_POINTS = (55 / 255, 158 / 255, 253 / 255)  # Bright Blue
     DNF_MARKERS = (255 / 255, 95 / 255, 89 / 255)  # Coral Red
-    AO5_LINE = (193 / 255, 147 / 255, 128 / 255)  # Sandy Brown
+    AO100_LINE = (193 / 255, 147 / 255, 128 / 255)  # Sandy Brown
     AO12_LINE = (150 / 255, 117 / 255, 107 / 255)  # Brownish Gray
-    AO100_LINE = (69 / 255, 29 / 255, 25 / 255)  # Dark Brown
+    AO5_LINE = (69 / 255, 29 / 255, 25 / 255)  # Dark Brown
     ROLLING_AVERAGE = (249 / 255, 167 / 255, 70 / 255)  # Golden Orange
     SIGMOID_CURVE = (245 / 255, 206 / 255, 74 / 255)  # Pale Gold
     REFERENCE_LINE = (110 / 255, 204 / 255, 82 / 255)  # Lime Green
@@ -342,13 +342,19 @@ def plot_times_over_date(
 
                         if stat["kind"] in color_map:
                             color, label = color_map[stat["kind"]]
+                            # Add time to the label if available
+                            time_str = (
+                                f"{stat['best']:.3f}s"
+                                if stat["best"] is not None
+                                else "DNF"
+                            )
                             ax.axvline(
                                 x=x_coordinate,
                                 color=color,
                                 linestyle="--",
                                 alpha=0.7,
                                 linewidth=2,
-                                label=f"{label} (solve #{stat['best_position']})",
+                                label=f"{label} ({time_str}, solve #{stat['best_position']})",
                             )
 
         # Add horizontal line at specified seconds for reference
@@ -403,17 +409,17 @@ def plot_times_over_date(
                         # Position the text at about 80% of the y-axis range
                         y_min, y_max = ax.get_ylim()
                         text_y = y_min + 0.8 * (y_max - y_min)
-                        
+
                         # Create short label for the text
                         short_label = stat["kind"].name.lower()  # ao5, ao12, ao100
-                        
+
                         # Choose color to match the line
                         color_map = {
                             StatisticKind.AO5: PlotColors.AO5_LINE.value,
                             StatisticKind.AO12: PlotColors.AO12_LINE.value,
                             StatisticKind.AO100: PlotColors.AO100_LINE.value,
                         }
-                        
+
                         if stat["kind"] in color_map:
                             color = color_map[stat["kind"]]
                             ax.text(
@@ -421,24 +427,24 @@ def plot_times_over_date(
                                 text_y,
                                 short_label,
                                 rotation=90,
-                                verticalalignment='center',
-                                horizontalalignment='center',
+                                verticalalignment="center",
+                                horizontalalignment="center",
                                 color=color,
                                 fontsize=10,
-                                fontweight='bold',
+                                fontweight="bold",
                                 alpha=0.9,
                                 bbox=dict(
                                     boxstyle="round,pad=0.3",
-                                    facecolor='white',
+                                    facecolor="white",
                                     edgecolor=color,
-                                    alpha=0.9
-                                )
+                                    alpha=0.9,
+                                ),
                             )
 
         # Add legend if there are DNFs or vertical lines
         legend = ax.legend(
-            loc="upper right",
-            bbox_to_anchor=(0.98, 0.98),
+            loc="upper center",
+            bbox_to_anchor=(0.5, 1.0),
             frameon=True,
             fancybox=False,
             shadow=False,
